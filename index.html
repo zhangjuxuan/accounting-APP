@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>简记 · 记账</title>
+  <!-- ECharts 用于账单统计图表 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ============ 首页 ============ -->
+    <section id="page-home" class="page active">
+      <header class="app-header">
+        <div class="brand">简记</div>
+        <div class="header-sub">记每一笔，看清每一分</div>
+      </header>
+
+      <!-- 当月收支汇总卡片 -->
+      <div class="summary-card">
+        <div class="summary-month" id="home-month">--</div>
+        <div class="summary-row">
+          <div class="summary-item">
+            <span class="summary-label">支出</span>
+            <span class="summary-value expense" id="home-expense">0.00</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">收入</span>
+            <span class="summary-value income" id="home-income">0.00</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">结余</span>
+            <span class="summary-value balance" id="home-balance">0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 按日分组的账单明细 -->
+      <div class="section-title">账单明细</div>
+      <div id="home-bill-list" class="bill-list"></div>
+      <div id="home-empty" class="empty-tip">本月还没有记账，点下方 ＋ 记一笔吧</div>
+    </section>
+
+    <!-- ============ 统计页 ============ -->
+    <section id="page-stats" class="page">
+      <header class="app-header">
+        <div class="brand">账单统计</div>
+      </header>
+
+      <div class="stats-toolbar">
+        <input type="month" id="stats-month" class="month-picker" />
+        <div class="seg-control" id="stats-seg">
+          <button class="seg-btn active" data-type="expense">支出</button>
+          <button class="seg-btn" data-type="income">收入</button>
+        </div>
+      </div>
+
+      <div class="stats-summary">
+        <div class="stats-summary-item">
+          <span class="summary-label">收入</span>
+          <span class="summary-value income" id="stats-income">0.00</span>
+        </div>
+        <div class="stats-summary-item">
+          <span class="summary-label">支出</span>
+          <span class="summary-value expense" id="stats-expense">0.00</span>
+        </div>
+        <div class="stats-summary-item">
+          <span class="summary-label">结余</span>
+          <span class="summary-value balance" id="stats-balance">0.00</span>
+        </div>
+      </div>
+
+      <div class="section-title">分类占比</div>
+      <div id="chart-category" class="chart-box"></div>
+      <div id="stats-empty" class="empty-tip">当月暂无数据</div>
+
+      <div class="section-title">近 6 月趋势</div>
+      <div id="chart-trend" class="chart-box"></div>
+    </section>
+
+    <!-- ============ 底部导航 ============ -->
+    <nav class="tab-bar">
+      <div class="tab-item active" data-page="home">
+        <span class="tab-icon">📒</span>
+        <span class="tab-text">首页</span>
+      </div>
+      <div class="tab-add" id="btn-add">＋</div>
+      <div class="tab-item" data-page="stats">
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">统计</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ============ 记账弹层 ============ -->
+  <div id="record-modal" class="modal">
+    <div class="modal-mask" id="record-mask"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <button class="modal-close" id="record-cancel">取消</button>
+        <div class="seg-control" id="record-seg">
+          <button class="seg-btn active" data-rtype="expense">支出</button>
+          <button class="seg-btn" data-rtype="income">收入</button>
+        </div>
+        <button class="modal-save" id="record-save">保存</button>
+      </div>
+
+      <!-- 已选分类 + 金额 -->
+      <div class="amount-display">
+        <span class="amount-cate" id="amount-cate">请选择分类</span>
+        <span class="amount-num"><span class="amount-symbol">¥</span><span id="amount-text">0.00</span></span>
+      </div>
+
+      <!-- 分类网格 -->
+      <div id="category-grid" class="category-grid"></div>
+
+      <!-- 备注 + 日期 -->
+      <div class="record-extra">
+        <input type="text" id="record-remark" class="remark-input" placeholder="点击添加备注…" maxlength="30" />
+        <input type="date" id="record-date" class="date-input" />
+      </div>
+
+      <!-- 数字键盘 -->
+      <div class="keypad" id="keypad">
+        <button data-key="7">7</button>
+        <button data-key="8">8</button>
+        <button data-key="9">9</button>
+        <button data-key="del" class="key-fn">⌫</button>
+        <button data-key="4">4</button>
+        <button data-key="5">5</button>
+        <button data-key="6">6</button>
+        <button data-key="clear" class="key-fn">C</button>
+        <button data-key="1">1</button>
+        <button data-key="2">2</button>
+        <button data-key="3">3</button>
+        <button data-key="ok" class="key-ok">完成</button>
+        <button data-key="0" class="key-zero">0</button>
+        <button data-key=".">.</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
